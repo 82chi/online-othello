@@ -1,0 +1,60 @@
+{
+  "app": {
+    "title": "オンライン オセロ"
+  },
+  "home": {
+    "title": "オンライン オセロ",
+    "subtitle": "友達とリアルタイム対戦！",
+    "createRoom": "ルームを作成",
+    "yourName": "あなたの名前",
+    "chooseColor": "色を選択",
+    "black": "黒",
+    "white": "白"
+  },
+  "room": {
+    "waiting": "対戦相手を待っています...",
+    "waitingDesc": "以下のURLを友達に共有して招待しよう！",
+    "copyUrl": "URLをコピー",
+    "copied": "コピーしました！",
+    "yourColor": "あなたの色",
+    "opponentName": "相手",
+    "full": "このルームは満員です（2/2）",
+    "notFound": "ルームが見つかりません",
+    "opponentLeft": "対戦相手が退出しました",
+    "reconnecting": "再接続中..."
+  },
+  "game": {
+    "yourTurn": "あなたのターン",
+    "opponentTurn": "相手のターン",
+    "pass": "パス",
+    "passNotice": "置ける場所がないためパスします",
+    "score": "スコア",
+    "black": "黒",
+    "white": "白"
+  },
+  "result": {
+    "title": "ゲーム終了",
+    "winner": "{color}の勝利！",
+    "draw": "引き分け！",
+    "reason": {
+      "full": "盤面が全て埋まりました",
+      "bothPass": "両者とも置ける場所がありません",
+      "annihilated": "片方の駒が全滅しました"
+    },
+    "finalScore": "最終スコア",
+    "rematch": "再戦する",
+    "home": "ホームに戻る",
+    "rematchRequest": "再戦をリクエスト中...",
+    "waitingRematch": "相手の承認を待っています...",
+    "rematchDeclined": "相手がホームに戻りました"
+  },
+  "chat": {
+    "placeholder": "メッセージを入力...",
+    "send": "送信",
+    "title": "チャット"
+  },
+  "lang": {
+    "ja": "日本語",
+    "en": "English"
+  }
+}

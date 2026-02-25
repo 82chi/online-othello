@@ -1,0 +1,60 @@
+{
+  "app": {
+    "title": "Online Othello"
+  },
+  "home": {
+    "title": "Online Othello",
+    "subtitle": "Real-time battles with friends!",
+    "createRoom": "Create Room",
+    "yourName": "Your Name",
+    "chooseColor": "Choose Color",
+    "black": "Black",
+    "white": "White"
+  },
+  "room": {
+    "waiting": "Waiting for opponent...",
+    "waitingDesc": "Share the URL below to invite a friend!",
+    "copyUrl": "Copy URL",
+    "copied": "Copied!",
+    "yourColor": "Your Color",
+    "opponentName": "Opponent",
+    "full": "This room is full (2/2)",
+    "notFound": "Room not found",
+    "opponentLeft": "Opponent has left",
+    "reconnecting": "Reconnecting..."
+  },
+  "game": {
+    "yourTurn": "Your Turn",
+    "opponentTurn": "Opponent's Turn",
+    "pass": "Pass",
+    "passNotice": "No valid moves. Passing turn.",
+    "score": "Score",
+    "black": "Black",
+    "white": "White"
+  },
+  "result": {
+    "title": "Game Over",
+    "winner": "{color} wins!",
+    "draw": "Draw!",
+    "reason": {
+      "full": "Board is full",
+      "bothPass": "No valid moves for either player",
+      "annihilated": "One player's pieces were eliminated"
+    },
+    "finalScore": "Final Score",
+    "rematch": "Rematch",
+    "home": "Back to Home",
+    "rematchRequest": "Requesting rematch...",
+    "waitingRematch": "Waiting for opponent...",
+    "rematchDeclined": "Opponent returned home"
+  },
+  "chat": {
+    "placeholder": "Type a message...",
+    "send": "Send",
+    "title": "Chat"
+  },
+  "lang": {
+    "ja": "日本語",
+    "en": "English"
+  }
+}
