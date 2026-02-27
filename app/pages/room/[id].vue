@@ -1,8 +1,8 @@
 <template>
   <div class="min-h-screen bg-gray-900 text-white flex flex-col">
     <!-- Header -->
-    <div class="flex items-center justify-between p-3 bg-gray-800 border-b border-gray-700">
-      <NuxtLink to="/" class="text-gray-400 hover:text-white transition-colors text-sm">
+    <div class="flex items-center justify-between p-4 bg-gray-800 border-b border-gray-700">
+      <NuxtLink to="/" class="text-gray-400 hover:text-white transition-colors text-base">
         ← {{ $t('result.home') }}
       </NuxtLink>
 
@@ -11,7 +11,7 @@
         <button
           v-for="locale in locales"
           :key="locale.code"
-          class="px-2 py-1 text-xs rounded transition-colors"
+          class="px-3 py-2 text-sm rounded transition-colors"
           :class="locale.code === currentLocale ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-400 hover:bg-gray-600'"
           @click="setLocale(locale.code)"
         >
@@ -23,8 +23,8 @@
     <!-- Error states -->
     <div v-if="error === 'room_full'" class="flex-1 flex items-center justify-center">
       <div class="text-center">
-        <div class="text-6xl mb-4">🚫</div>
-        <h2 class="text-xl font-bold text-red-400 mb-2">{{ $t('room.full') }}</h2>
+        <div class="text-7xl mb-4">🚫</div>
+        <h2 class="text-2xl font-bold text-red-400 mb-2">{{ $t('room.full') }}</h2>
         <NuxtLink to="/" class="text-blue-400 hover:text-blue-300 underline">{{ $t('result.home') }}</NuxtLink>
       </div>
     </div>
@@ -32,20 +32,20 @@
     <!-- Waiting screen -->
     <div v-else-if="!gameState || gameState.status === 'waiting'" class="flex-1 flex flex-col items-center justify-center p-4">
       <div class="text-center mb-6">
-        <div class="text-5xl mb-4">♟️</div>
-        <h2 class="text-xl font-bold mb-2">{{ $t('room.waiting') }}</h2>
-        <p class="text-gray-400 text-sm">{{ $t('room.waitingDesc') }}</p>
+        <div class="text-6xl mb-4">♟️</div>
+        <h2 class="text-2xl font-bold mb-2">{{ $t('room.waiting') }}</h2>
+        <p class="text-gray-400 text-base">{{ $t('room.waitingDesc') }}</p>
       </div>
 
       <!-- URL copy -->
-      <div class="flex items-center gap-2 bg-gray-800 rounded-lg p-3 mb-4 w-full max-w-md">
+      <div class="flex items-center gap-2 bg-gray-800 rounded-lg p-4 mb-4 w-full max-w-lg">
         <input
           :value="currentUrl"
           readonly
-          class="flex-1 bg-transparent text-gray-300 text-sm focus:outline-none"
+          class="flex-1 bg-transparent text-gray-300 text-base focus:outline-none"
         />
         <button
-          class="px-3 py-1 bg-blue-600 hover:bg-blue-500 rounded text-sm font-medium transition-colors whitespace-nowrap"
+          class="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded text-base font-medium transition-colors whitespace-nowrap"
           @click="copyUrl"
         >
           {{ copied ? $t('room.copied') : $t('room.copyUrl') }}
@@ -53,21 +53,21 @@
       </div>
 
       <!-- My color info -->
-      <div v-if="gameState" class="text-sm text-gray-400">
+      <div v-if="gameState" class="text-base text-gray-400">
         {{ $t('room.yourColor') }}:
         <span class="font-bold" :class="myPlayer?.color === 'black' ? 'text-gray-300' : 'text-white'">
           {{ myPlayer?.color === 'black' ? $t('game.black') : $t('game.white') }}
         </span>
       </div>
 
-      <div class="mt-4 flex items-center gap-2 text-gray-500 text-sm">
-        <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+      <div class="mt-4 flex items-center gap-2 text-gray-500 text-base">
+        <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
         {{ isConnecting ? $t('room.reconnecting') : $t('room.waiting') }}
       </div>
     </div>
 
     <!-- Game screen -->
-    <div v-else-if="gameState.status === 'playing' || gameState.status === 'finished'" class="flex-1 flex flex-col lg:flex-row gap-3 p-3 min-h-0">
+    <div v-else-if="gameState.status === 'playing' || gameState.status === 'finished'" class="flex-1 flex flex-col lg:flex-row gap-3 p-4 min-h-0">
 
       <!-- Main game area -->
       <div class="flex flex-col items-center gap-3 flex-1">
@@ -93,7 +93,7 @@
       </div>
 
       <!-- Chat sidebar -->
-      <div class="h-48 lg:h-auto lg:w-64 xl:w-72">
+      <div class="h-64 lg:h-auto lg:w-80 xl:w-96">
         <Chat
           :messages="chatMessages"
           :my-id="myId"
@@ -118,17 +118,17 @@
         v-if="incomingRematch"
         class="fixed inset-0 flex items-center justify-center bg-black/60 z-40"
       >
-        <div class="bg-gray-800 rounded-2xl p-6 text-center max-w-sm w-full mx-4">
-          <p class="text-lg font-bold mb-4">{{ opponent?.name }} {{ $t('result.rematch') }}?</p>
+        <div class="bg-gray-800 rounded-2xl p-8 text-center max-w-md w-full mx-4">
+          <p class="text-xl font-bold mb-4">{{ opponent?.name }} {{ $t('result.rematch') }}?</p>
           <div class="flex gap-3 justify-center">
             <button
-              class="px-5 py-2 bg-green-600 hover:bg-green-500 rounded-lg font-semibold transition-colors"
+              class="px-6 py-3 bg-green-600 hover:bg-green-500 rounded-lg font-semibold transition-colors"
               @click="acceptRematch"
             >
               ✓
             </button>
             <button
-              class="px-5 py-2 bg-red-600 hover:bg-red-500 rounded-lg font-semibold transition-colors"
+              class="px-6 py-3 bg-red-600 hover:bg-red-500 rounded-lg font-semibold transition-colors"
               @click="declineRematch"
             >
               ✗
