@@ -4,7 +4,7 @@ export default defineNuxtConfig({
   future: {
     compatibilityVersion: 4,
   },
-  devtools: { enabled: true },
+  devtools: { enabled: process.env.NODE_ENV !== 'production' },
   modules: ['@nuxtjs/tailwindcss', '@nuxtjs/i18n'],
   i18n: {
     locales: [
