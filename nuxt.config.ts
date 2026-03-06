@@ -8,12 +8,12 @@ export default defineNuxtConfig({
   modules: ['@nuxtjs/tailwindcss', '@nuxtjs/i18n'],
   i18n: {
     locales: [
-      { code: 'ja', language: 'ja-JP', name: '日本語', file: 'ja.json' },
-      { code: 'en', language: 'en-US', name: 'English', file: 'en.json' },
+      { code: 'ja', language: 'ja-JP', name: '日本語' },
+      { code: 'en', language: 'en-US', name: 'English' },
     ],
     defaultLocale: 'ja',
-    langDir: 'i18n/locales',
     strategy: 'no_prefix',
+    vueI18n: './i18n.config.ts',
   },
   runtimeConfig: {
     public: {
