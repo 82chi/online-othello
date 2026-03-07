@@ -16,10 +16,20 @@ export function usePartykit(roomId: string) {
   const rematchRequest = ref<string | null>(null)
   const opponentLeft = ref(false)
 
+  // keep last connect params for reconnect
+  const lastPlayerName = ref<string | null>(null)
+  const lastPreferredColor = ref<PlayerColor | undefined>(undefined)
+
   let passNoticeTimer: ReturnType<typeof setTimeout> | null = null
 
   function connect(playerName: string, preferredColor?: PlayerColor) {
+    // already connected/connecting
+    if (isConnected.value || isConnecting.value) return
+    // socket object still present (shouldn't happen, but guard)
     if (socket.value) return
+
+    lastPlayerName.value = playerName
+    lastPreferredColor.value = preferredColor
 
     isConnecting.value = true
     error.value = null
@@ -48,14 +58,34 @@ export function usePartykit(roomId: string) {
 
     ws.addEventListener('close', () => {
       isConnected.value = false
+      isConnecting.value = false
+      // allow reconnect
+      socket.value = null
     })
 
     ws.addEventListener('error', () => {
       error.value = 'connection_error'
+      isConnected.value = false
       isConnecting.value = false
+      // allow reconnect
+      socket.value = null
     })
 
     socket.value = ws
+  }
+
+  function reconnect() {
+    if (!lastPlayerName.value) return
+    // ensure old socket is gone
+    if (socket.value) {
+      try {
+        socket.value.close()
+      } catch {
+        // ignore
+      }
+      socket.value = null
+    }
+    connect(lastPlayerName.value, lastPreferredColor.value)
   }
 
   function handleServerMessage(msg: ServerMessage) {
@@ -67,7 +97,6 @@ export function usePartykit(roomId: string) {
       case 'stateUpdate': {
         const prev = gameState.value
         gameState.value = msg.state
-        // Show pass notice if passCount increased but game didn't finish
         if (prev && msg.state.passCount > prev.passCount && msg.state.status === 'playing') {
           showPassNotice()
         }
@@ -79,6 +108,8 @@ export function usePartykit(roomId: string) {
       case 'error':
         if (msg.code === 'ROOM_FULL') error.value = 'room_full'
         else if (msg.code === 'ROOM_NOT_FOUND') error.value = 'room_not_found'
+        else if (msg.code === 'UNAUTHORIZED') error.value = 'unauthorized'
+        else error.value = 'server_error'
         break
       case 'opponentLeft':
         opponentLeft.value = true
@@ -112,9 +143,10 @@ export function usePartykit(roomId: string) {
 
   function sendChat(text: string) {
     if (!socket.value) return
-    const sanitized = text.replace(/</g, '&lt;').replace(/>/g, '&gt;').slice(0, 200)
-    if (!sanitized.trim()) return
-    const msg: ClientMessage = { type: 'chat', text: sanitized }
+    // After removing v-html, we only need basic trimming + length limit.
+    const normalized = text.slice(0, 200).trim()
+    if (!normalized) return
+    const msg: ClientMessage = { type: 'chat', text: normalized }
     socket.value.send(JSON.stringify(msg))
   }
 
@@ -141,6 +173,8 @@ export function usePartykit(roomId: string) {
       socket.value.close()
       socket.value = null
     }
+    isConnected.value = false
+    isConnecting.value = false
     if (passNoticeTimer) clearTimeout(passNoticeTimer)
   }
 
@@ -170,6 +204,7 @@ export function usePartykit(roomId: string) {
     rematchRequest,
     opponentLeft,
     connect,
+    reconnect,
     sendMove,
     sendChat,
     requestRematch,

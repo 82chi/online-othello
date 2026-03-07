@@ -11,11 +11,14 @@
         :class="msg.playerId === myId ? 'text-right' : 'text-left'"
       >
         <div class="text-gray-400 mb-0.5">{{ msg.playerName }}</div>
+
+        <!-- NOTE: Avoid v-html to prevent XSS. Render as plain text. -->
         <div
-          class="inline-block px-2 py-1 rounded max-w-[80%] break-words text-white"
+          class="inline-block px-2 py-1 rounded max-w-[80%] break-words text-white whitespace-pre-wrap"
           :class="msg.playerId === myId ? 'bg-blue-600' : 'bg-gray-600'"
-          v-html="msg.text"
-        />
+        >
+          {{ msg.text }}
+        </div>
       </div>
     </div>
 
