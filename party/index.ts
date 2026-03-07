@@ -53,9 +53,10 @@ export default class OthelloServer implements Party.Server {
 
   private sanitize(text: string): string {
     return text
+      // Escape '&' first to avoid double-escaping like &lt; -> &amp;lt;
+      .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
-      .replace(/&/g, '&amp;')
       .slice(0, MAX_CHAT_LENGTH)
   }
 
