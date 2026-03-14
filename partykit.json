@@ -3,6 +3,6 @@
   "$schema": "https://www.partykit.io/schema.json",
   "main": "party/index.ts",
   "parties": {
-    "main": "party/index.ts"
+    "othello": "party/index.ts"
   }
 }
