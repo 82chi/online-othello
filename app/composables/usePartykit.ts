@@ -37,7 +37,7 @@ export function usePartykit(roomId: string) {
     const ws = new PartySocket({
       host: partyKitHost,
       room: roomId,
-      party: 'main',
+      party: 'othello',
     })
 
     ws.addEventListener('open', () => {
