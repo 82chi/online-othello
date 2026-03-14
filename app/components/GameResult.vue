@@ -9,10 +9,10 @@
           {{ $t('result.draw') }}
         </span>
         <span v-else-if="gameState.winner === myColor" class="text-green-400">
-          🎉 {{ $t('result.winner', { color: $t(`game.${myColor}`) }) }}
+          🎉 {{ $t('result.win') }}
         </span>
         <span v-else class="text-red-400">
-          😔 {{ $t('result.winner', { color: $t(`game.${gameState.winner}`) }) }}
+          😔 {{ $t('result.lose') }}
         </span>
       </div>
 

@@ -35,7 +35,11 @@
   "result": {
     "title": "ゲーム終了",
     "winner": "{color}の勝利！",
-    "draw": "引き分け！",
+    "win": "あなたの勝ち！",
+    "lose": "あなたの負け",
+    "draw": "🤝 引き分け",
+    "wins": "{count}勝",
+    "losses": "{count}敗",
     "reason": {
       "full": "盤面が全て埋まりました",
       "bothPass": "両者とも置ける場所がありません",

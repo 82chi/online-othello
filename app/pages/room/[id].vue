@@ -76,6 +76,8 @@
           :game-state="gameState"
           :my-id="myId"
           :is-my-turn="isMyTurn"
+          :wins="wins"
+          :losses="losses"
         />
 
         <!-- Board -->
@@ -153,11 +155,13 @@
 <script setup lang="ts">
 import type { PlayerColor } from '~/types/game'
 import { getValidMoves } from '~/composables/useOthello'
+import { useWinLoss } from '~/composables/useWinLoss'
 
 const route = useRoute()
 const router = useRouter()
 const { locale: currentLocale, locales, setLocale } = useI18n()
 const { getOrCreateGuestName } = useRoom()
+const { wins, losses, addWin, addLoss } = useWinLoss()
 
 const roomId = route.params.id as string
 const preferredColor = (route.query.color as PlayerColor) || undefined
@@ -240,6 +244,17 @@ watch(error, (val) => {
 
 // Game result
 const showResult = computed(() => gameState.value?.status === 'finished')
+
+watch(showResult, (val) => {
+  if (val && gameState.value && myPlayer.value) {
+    const winner = gameState.value.winner
+    if (winner === myPlayer.value.color) {
+      addWin()
+    } else if (winner !== 'draw') {
+      addLoss()
+    }
+  }
+})
 
 function goHome() {
   router.push('/')
