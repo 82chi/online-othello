@@ -35,7 +35,11 @@
   "result": {
     "title": "Game Over",
     "winner": "{color} wins!",
-    "draw": "Draw!",
+    "win": "You Win!",
+    "lose": "You Lose",
+    "draw": "🤝 Draw",
+    "wins": "{count}W",
+    "losses": "{count}L",
     "reason": {
       "full": "Board is full",
       "bothPass": "No valid moves for either player",

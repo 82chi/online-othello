@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-8 gap-0 border-2 border-green-900 rounded w-full max-w-[min(90vw,90vh,480px)] mx-auto aspect-square">
+  <div class="grid grid-cols-8 gap-0 border-4 border-green-900 rounded w-full max-w-[min(92vw,92vh,600px)] mx-auto aspect-square">
     <Cell
       v-for="(value, index) in flatBoard"
       :key="index"
