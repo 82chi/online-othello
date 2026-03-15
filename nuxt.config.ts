@@ -13,7 +13,7 @@ export default defineNuxtConfig({
     ],
     defaultLocale: 'ja',
     strategy: 'no_prefix',
-    vueI18n: './i18n.config.ts',
+    vueI18n: '../i18n.config.ts',
   },
   runtimeConfig: {
     public: {
