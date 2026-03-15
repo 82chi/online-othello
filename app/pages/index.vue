@@ -1,12 +1,12 @@
 <template>
-  <div class="min-h-screen bg-gray-900 flex flex-col items-center justify-center p-6">
+  <div class="min-h-screen bg-gray-900 flex flex-col items-center justify-center px-4 py-12">
     <!-- Language switcher -->
-    <div class="absolute top-4 right-4 flex gap-2">
+    <div class="absolute top-5 right-5 flex gap-2">
       <button
         v-for="locale in locales"
         :key="locale.code"
-        class="px-4 py-2 text-base rounded transition-colors"
-        :class="locale.code === currentLocale ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'"
+        class="px-5 py-2 text-sm font-semibold rounded-full transition-colors"
+        :class="locale.code === currentLocale ? 'bg-blue-600 text-white shadow-lg' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'"
         @click="setLocale(locale.code)"
       >
         {{ locale.name }}
@@ -14,50 +14,52 @@
     </div>
 
     <!-- Title -->
-    <div class="text-center mb-10">
-      <h1 class="text-5xl font-bold text-white mb-2">{{ $t('home.title') }}</h1>
-      <p class="text-gray-400">{{ $t('home.subtitle') }}</p>
+    <div class="text-center mb-12">
+      <h1 class="text-6xl sm:text-7xl font-extrabold mb-4 bg-gradient-to-r from-green-400 via-emerald-300 to-teal-400 bg-clip-text text-transparent drop-shadow-lg">
+        {{ $t('home.title') }}
+      </h1>
+      <p class="text-gray-300 text-xl sm:text-2xl font-medium">{{ $t('home.subtitle') }}</p>
     </div>
 
     <!-- Create room form -->
-    <div class="bg-gray-800 rounded-3xl p-8 w-full max-w-md shadow-xl">
+    <div class="bg-gray-800/90 backdrop-blur-sm rounded-3xl p-8 sm:p-10 w-full max-w-lg shadow-2xl border border-gray-700/50">
       <!-- Player name -->
-      <div class="mb-5">
-        <label class="block text-base font-medium text-gray-300 mb-1">
+      <div class="mb-7">
+        <label class="block text-lg font-semibold text-gray-200 mb-2">
           {{ $t('home.yourName') }}
         </label>
         <input
           v-model="playerName"
           type="text"
           maxlength="20"
-          class="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:border-blue-400"
+          class="w-full px-5 py-4 bg-gray-700/80 text-white text-lg rounded-xl border border-gray-600 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 transition-all placeholder-gray-500"
         />
       </div>
 
       <!-- Color selection -->
-      <div class="mb-8">
-        <label class="block text-base font-medium text-gray-300 mb-2">
+      <div class="mb-10">
+        <label class="block text-lg font-semibold text-gray-200 mb-3">
           {{ $t('home.chooseColor') }}
         </label>
         <div class="flex gap-4">
           <button
-            class="flex-1 flex items-center justify-center gap-2 py-3 rounded-lg border-2 transition-colors font-semibold"
+            class="flex-1 flex items-center justify-center gap-3 py-4 rounded-xl border-2 transition-all font-bold text-lg"
             :class="selectedColor === 'black'
-              ? 'border-blue-500 bg-blue-900/30 text-white'
-              : 'border-gray-600 text-gray-400 hover:border-gray-400'"
+              ? 'border-blue-500 bg-blue-900/40 text-white shadow-lg shadow-blue-900/30'
+              : 'border-gray-600 text-gray-400 hover:border-gray-400 hover:text-gray-200'"
             @click="selectedColor = 'black'"
           >
-            <div class="w-6 h-6 rounded-full bg-gray-900 border border-gray-500" />
+            <div class="w-8 h-8 rounded-full bg-gray-950 border-2 border-gray-500 shadow-inner" />
             {{ $t('home.black') }}
           </button>
           <button
-            class="flex-1 flex items-center justify-center gap-2 py-3 rounded-lg border-2 transition-colors font-semibold"
+            class="flex-1 flex items-center justify-center gap-3 py-4 rounded-xl border-2 transition-all font-bold text-lg"
             :class="selectedColor === 'white'
-              ? 'border-blue-500 bg-blue-900/30 text-white'
-              : 'border-gray-600 text-gray-400 hover:border-gray-400'"
+              ? 'border-blue-500 bg-blue-900/40 text-white shadow-lg shadow-blue-900/30'
+              : 'border-gray-600 text-gray-400 hover:border-gray-400 hover:text-gray-200'"
             @click="selectedColor = 'white'"
           >
-            <div class="w-6 h-6 rounded-full bg-white border border-gray-300" />
+            <div class="w-8 h-8 rounded-full bg-white border-2 border-gray-300 shadow-inner" />
             {{ $t('home.white') }}
           </button>
         </div>
@@ -65,7 +67,7 @@
 
       <!-- Create button -->
       <button
-        class="w-full py-4 bg-green-600 hover:bg-green-500 text-white font-bold rounded-lg transition-colors text-xl"
+        class="w-full py-5 bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-500 hover:to-emerald-400 text-white font-extrabold rounded-xl transition-all text-2xl shadow-lg shadow-green-900/40 hover:shadow-green-800/60 active:scale-95"
         @click="createRoom"
       >
         {{ $t('home.createRoom') }}
@@ -73,12 +75,12 @@
     </div>
 
     <!-- Decorative board preview -->
-    <div class="mt-8 grid grid-cols-4 gap-2 opacity-20">
-      <div v-for="i in 16" :key="i" class="w-10 h-10 bg-green-700 border border-green-800 rounded-sm flex items-center justify-center">
+    <div class="mt-12 grid grid-cols-4 gap-2 opacity-40">
+      <div v-for="i in 16" :key="i" class="w-12 h-12 bg-green-700 border border-green-800 rounded-sm flex items-center justify-center">
         <div
           v-if="[5, 6, 9, 10].includes(i)"
-          class="w-7 h-7 rounded-full"
-          :class="[5, 10].includes(i) ? 'bg-white' : 'bg-gray-900'"
+          class="w-9 h-9 rounded-full"
+          :class="[5, 10].includes(i) ? 'bg-white' : 'bg-gray-950'"
         />
       </div>
     </div>
