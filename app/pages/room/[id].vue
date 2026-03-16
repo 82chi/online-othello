@@ -1,13 +1,19 @@
 <template>
-  <div :class="isDark ? 'min-h-screen bg-gray-900 text-white flex flex-col' : 'min-h-screen bg-gray-100 text-gray-900 flex flex-col'">
+  <div
+    class="min-h-screen flex flex-col transition-colors duration-300"
+    :class="isDark ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'"
+  >
     <!-- Header -->
-    <div :class="isDark ? 'flex items-center justify-between p-4 bg-gray-800 border-b border-gray-700' : 'flex items-center justify-between p-4 bg-white border-b border-gray-300'">
+    <div
+      class="flex items-center justify-between p-4 border-b"
+      :class="isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200 shadow-sm'"
+    >
       <NuxtLink to="/" :class="isDark ? 'text-gray-400 hover:text-white transition-colors text-base' : 'text-gray-500 hover:text-gray-900 transition-colors text-base'">
         ← {{ $t('result.home') }}
       </NuxtLink>
 
       <!-- Language switcher + Theme toggle -->
-      <div class="flex gap-2">
+      <div class="flex gap-2 items-center">
         <button
           v-for="locale in locales"
           :key="locale.code"
@@ -21,7 +27,8 @@
         </button>
         <button
           class="px-3 py-2 text-sm rounded transition-colors"
-          :class="isDark ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'"
+          :class="isDark ? 'bg-gray-700 text-yellow-300 hover:bg-gray-600' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'"
+          :title="isDark ? $t('theme.light') : $t('theme.dark')"
           @click="toggleTheme"
         >
           {{ isDark ? '☀️' : '🌙' }}

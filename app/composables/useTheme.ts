@@ -1,14 +1,21 @@
-const isDark = ref(false)
-
-if (import.meta.client) {
-  isDark.value = sessionStorage.getItem('theme') === 'dark'
-}
+const theme = ref<'light' | 'dark'>('light')
+let initialized = false
 
 export function useTheme() {
+  if (import.meta.client && !initialized) {
+    initialized = true
+    const stored = sessionStorage.getItem('theme')
+    if (stored === 'dark' || stored === 'light') {
+      theme.value = stored
+    }
+  }
+
+  const isDark = computed(() => theme.value === 'dark')
+
   function toggleTheme() {
-    isDark.value = !isDark.value
+    theme.value = theme.value === 'dark' ? 'light' : 'dark'
     if (import.meta.client) {
-      sessionStorage.setItem('theme', isDark.value ? 'dark' : 'light')
+      sessionStorage.setItem('theme', theme.value)
     }
   }
 
