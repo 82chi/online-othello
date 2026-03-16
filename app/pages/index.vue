@@ -96,7 +96,7 @@
       <div v-for="i in 16" :key="i" class="w-12 h-12 bg-green-700 border border-green-800 rounded-sm flex items-center justify-center">
         <div
           v-if="[5, 6, 9, 10].includes(i)"
-          class="w-9 h-9 rounded-full"
+          class="w-9 h-9 rounded-full flex-shrink-0 mx-auto"
           :class="[5, 10].includes(i) ? 'bg-white' : 'bg-gray-950'"
         />
       </div>
