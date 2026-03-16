@@ -1,7 +1,9 @@
 <template>
   <div
-    class="w-4 h-4 rounded-full sm:w-6 sm:h-6 md:w-8 md:h-8"
-    :class="color === 'black' ? 'bg-gray-900 shadow-inner' : 'bg-white border border-gray-300 shadow-inner'"
+    class="w-[75%] h-[75%] rounded-full transition-all duration-200"
+    :class="color === 'black'
+      ? 'bg-gradient-to-br from-gray-700 to-gray-950 shadow-md shadow-black/50'
+      : 'bg-gradient-to-br from-white to-gray-200 border border-gray-300 shadow-md shadow-black/30'"
   />
 </template>
 
