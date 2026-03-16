@@ -1,7 +1,7 @@
 <template>
   <div
-    class="flex flex-col items-center gap-2 p-5 rounded-lg w-full max-w-md mx-auto"
-    :class="isDark ? 'bg-gray-800 text-white' : 'bg-white text-gray-900 shadow border border-gray-200'"
+    class="flex flex-col items-center gap-2 p-5 rounded-lg w-full max-w-md mx-auto transition-colors duration-300"
+    :class="isDark ? 'bg-gray-800 text-white' : 'bg-white text-gray-900 shadow-md border border-gray-200'"
   >
     <!-- Win/Loss record -->
     <div v-if="wins !== undefined && losses !== undefined" class="text-base font-semibold" :class="isDark ? 'text-gray-300' : 'text-gray-600'">
@@ -11,13 +11,13 @@
     <!-- Score -->
     <div class="flex items-center gap-4 text-3xl font-bold">
       <div class="flex items-center gap-2">
-        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-gray-700 to-gray-950 shadow-md" />
+        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-gray-700 to-gray-950 border-2 border-gray-600 shadow-md" />
         <span>{{ blackCount }}</span>
       </div>
-      <span class="text-gray-400">:</span>
+      <span :class="isDark ? 'text-gray-400' : 'text-gray-500'">:</span>
       <div class="flex items-center gap-2">
         <span>{{ whiteCount }}</span>
-        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-white to-gray-200 border border-gray-300 shadow-md" />
+        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-white to-gray-200 border-2 border-gray-300 shadow-md" />
       </div>
     </div>
 

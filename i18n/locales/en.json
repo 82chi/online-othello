@@ -60,5 +60,9 @@
   "lang": {
     "ja": "日本語",
     "en": "English"
+  },
+  "theme": {
+    "light": "Switch to Light Mode",
+    "dark": "Switch to Dark Mode"
   }
 }
