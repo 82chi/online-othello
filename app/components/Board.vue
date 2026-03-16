@@ -13,7 +13,7 @@
 <script setup lang="ts">
 import type { Board } from '~/types/game'
 
-const props = defineProps<{ board: Board validMoves: [number, number][] isMyTurn: boolean }>()
+const props = defineProps<{ board: Board; validMoves: [number, number][]; isMyTurn: boolean }>()
 
 const emit = defineEmits<{ move: [row: number, col: number] }>()
 
