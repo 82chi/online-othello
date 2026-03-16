@@ -1,21 +1,42 @@
 <template>
-  <div class="min-h-screen bg-gray-900 text-white flex flex-col">
+  <div
+    class="min-h-screen flex flex-col transition-colors duration-300"
+    :class="isDark ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'"
+  >
     <!-- Header -->
-    <div class="flex items-center justify-between p-4 bg-gray-800 border-b border-gray-700">
-      <NuxtLink to="/" class="text-gray-400 hover:text-white transition-colors text-base">
+    <div
+      class="flex items-center justify-between p-4 border-b"
+      :class="isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200 shadow-sm'"
+    >
+      <NuxtLink
+        to="/"
+        class="transition-colors text-base"
+        :class="isDark ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-900'"
+      >
         ← {{ $t('result.home') }}
       </NuxtLink>
 
-      <!-- Language switcher -->
-      <div class="flex gap-2">
+      <!-- Language switcher + theme toggle -->
+      <div class="flex gap-2 items-center">
         <button
           v-for="locale in locales"
           :key="locale.code"
           class="px-3 py-2 text-sm rounded transition-colors"
-          :class="locale.code === currentLocale ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-400 hover:bg-gray-600'"
+          :class="locale.code === currentLocale
+            ? 'bg-blue-600 text-white'
+            : isDark ? 'bg-gray-700 text-gray-400 hover:bg-gray-600' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'"
           @click="setLocale(locale.code)"
         >
           {{ locale.name }}
+        </button>
+        <!-- Theme toggle -->
+        <button
+          class="px-3 py-2 text-sm rounded transition-colors"
+          :class="isDark ? 'bg-gray-700 text-yellow-300 hover:bg-gray-600' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'"
+          :title="isDark ? $t('theme.light') : $t('theme.dark')"
+          @click="toggleTheme"
+        >
+          {{ isDark ? '☀️' : '🌙' }}
         </button>
       </div>
     </div>
@@ -34,18 +55,22 @@
       <div class="text-center mb-6">
         <div class="text-6xl mb-4">♟️</div>
         <h2 class="text-2xl font-bold mb-2">{{ $t('room.waiting') }}</h2>
-        <p class="text-gray-400 text-base">{{ $t('room.waitingDesc') }}</p>
+        <p class="text-base" :class="isDark ? 'text-gray-400' : 'text-gray-500'">{{ $t('room.waitingDesc') }}</p>
       </div>
 
       <!-- URL copy -->
-      <div class="flex items-center gap-2 bg-gray-800 rounded-lg p-4 mb-4 w-full max-w-lg">
+      <div
+        class="flex items-center gap-2 rounded-lg p-4 mb-4 w-full max-w-lg"
+        :class="isDark ? 'bg-gray-800' : 'bg-white border border-gray-200 shadow-sm'"
+      >
         <input
           :value="currentUrl"
           readonly
-          class="flex-1 bg-transparent text-gray-300 text-base focus:outline-none"
+          class="flex-1 bg-transparent text-base focus:outline-none"
+          :class="isDark ? 'text-gray-300' : 'text-gray-600'"
         />
         <button
-          class="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded text-base font-medium transition-colors whitespace-nowrap"
+          class="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded text-base font-medium transition-colors whitespace-nowrap text-white"
           @click="copyUrl"
         >
           {{ copied ? $t('room.copied') : $t('room.copyUrl') }}
@@ -53,14 +78,14 @@
       </div>
 
       <!-- My color info -->
-      <div v-if="gameState" class="text-base text-gray-400">
+      <div v-if="gameState" class="text-base" :class="isDark ? 'text-gray-400' : 'text-gray-500'">
         {{ $t('room.yourColor') }}:
-        <span class="font-bold" :class="myPlayer?.color === 'black' ? 'text-gray-300' : 'text-white'">
+        <span class="font-bold" :class="myPlayer?.color === 'black' ? isDark ? 'text-gray-300' : 'text-gray-700' : isDark ? 'text-white' : 'text-gray-900'">
           {{ myPlayer?.color === 'black' ? $t('game.black') : $t('game.white') }}
         </span>
       </div>
 
-      <div class="mt-4 flex items-center gap-2 text-gray-500 text-base">
+      <div class="mt-4 flex items-center gap-2 text-base" :class="isDark ? 'text-gray-500' : 'text-gray-400'">
         <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
         {{ isConnecting ? $t('room.reconnecting') : $t('room.waiting') }}
       </div>
@@ -120,7 +145,7 @@
         v-if="incomingRematch"
         class="fixed inset-0 flex items-center justify-center bg-black/60 z-40"
       >
-        <div class="bg-gray-800 rounded-2xl p-8 text-center max-w-md w-full mx-4">
+        <div class="bg-gray-800 rounded-2xl p-8 text-center max-w-md w-full mx-4 text-white">
           <p class="text-xl font-bold mb-4">{{ opponent?.name }} {{ $t('result.rematch') }}?</p>
           <div class="flex gap-3 justify-center">
             <button
@@ -156,12 +181,14 @@
 import type { PlayerColor } from '~/types/game'
 import { getValidMoves } from '~/composables/useOthello'
 import { useWinLoss } from '~/composables/useWinLoss'
+import { useTheme } from '~/composables/useTheme'
 
 const route = useRoute()
 const router = useRouter()
 const { locale: currentLocale, locales, setLocale } = useI18n()
 const { getOrCreateGuestName } = useRoom()
 const { wins, losses, addWin, addLoss } = useWinLoss()
+const { isDark, toggleTheme } = useTheme()
 
 const roomId = route.params.id as string
 const preferredColor = (route.query.color as PlayerColor) || undefined
