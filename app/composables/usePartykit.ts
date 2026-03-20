@@ -97,6 +97,9 @@ export function usePartykit(roomId: string) {
       case 'stateUpdate': {
         const prev = gameState.value
         gameState.value = msg.state
+        if (msg.state.status === 'playing') {
+          opponentLeft.value = false
+        }
         if (prev && msg.state.passCount > prev.passCount && msg.state.status === 'playing') {
           showPassNotice()
         }

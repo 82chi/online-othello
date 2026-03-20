@@ -185,6 +185,8 @@ export default class OthelloServer implements Party.Server {
     const player = this.gameState.players.find(p => p.id === conn.id)
     if (!player) return
 
+    if (this.rematchVotes.has(conn.id)) return
+
     this.rematchVotes.add(conn.id)
 
     // Notify other players
