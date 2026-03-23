@@ -1,16 +1,27 @@
-export function useSound() {
-  let audioCtx: AudioContext | null = null
+import { ref } from 'vue'
 
-  function getCtx(): AudioContext | null {
-    if (!import.meta.client) return null
-    if (!audioCtx) audioCtx = new AudioContext()
-    return audioCtx
+let audioCtx: AudioContext | null = null
+
+function getOrCreateCtx(): AudioContext | null {
+  if (!import.meta.client) return null
+  if (!audioCtx) audioCtx = new AudioContext()
+  return audioCtx
+}
+
+const isMuted = ref(false)
+let soundInitialized = false
+
+export function useSound() {
+  if (import.meta.client && !soundInitialized) {
+    soundInitialized = true
+    isMuted.value = sessionStorage.getItem('muted') === 'true'
   }
 
-  function playPieceSound() {
-    const ctx = getCtx()
+  async function playPieceSound() {
+    if (isMuted.value) return
+    const ctx = getOrCreateCtx()
     if (!ctx) return
-    if (ctx.state === 'suspended') ctx.resume()
+    if (ctx.state === 'suspended') await ctx.resume()
 
     const osc = ctx.createOscillator()
     const gain = ctx.createGain()
@@ -28,5 +39,12 @@ export function useSound() {
     osc.stop(now + 0.08)
   }
 
-  return { playPieceSound }
+  function toggleMute() {
+    isMuted.value = !isMuted.value
+    if (import.meta.client) {
+      sessionStorage.setItem('muted', String(isMuted.value))
+    }
+  }
+
+  return { playPieceSound, isMuted, toggleMute }
 }

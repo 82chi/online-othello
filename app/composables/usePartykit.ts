@@ -17,6 +17,7 @@ export function usePartykit(roomId: string) {
   const passNotice = ref(false)
   const rematchRequest = ref<string | null>(null)
   const opponentLeft = ref(false)
+  const reactions = ref<{ id: string; emoji: string; fromName: string }[]>([])
 
   // keep last connect params for reconnect
   const lastPlayerName = ref<string | null>(null)
@@ -137,6 +138,14 @@ export function usePartykit(roomId: string) {
         rematchRequest.value = null
         error.value = 'rematch_declined'
         break
+      case 'reaction': {
+        const id = Math.random().toString(36).slice(2)
+        reactions.value.push({ id, emoji: msg.emoji, fromName: msg.fromName })
+        setTimeout(() => {
+          reactions.value = reactions.value.filter(r => r.id !== id)
+        }, 3000)
+        break
+      }
     }
   }
 
@@ -181,6 +190,12 @@ export function usePartykit(roomId: string) {
     socket.value.send(JSON.stringify(msg))
   }
 
+  function sendReaction(emoji: string) {
+    if (!socket.value) return
+    const msg: ClientMessage = { type: 'reaction', emoji }
+    socket.value.send(JSON.stringify(msg))
+  }
+
   function disconnect() {
     if (socket.value) {
       socket.value.close()
@@ -220,9 +235,11 @@ export function usePartykit(roomId: string) {
     reconnect,
     sendMove,
     sendChat,
+    sendReaction,
     requestRematch,
     acceptRematch,
     declineRematch,
     disconnect,
+    reactions,
   }
 }

@@ -41,6 +41,7 @@ export type ServerMessage =
   | { type: 'rematchRequest'; fromId: string }
   | { type: 'rematchAccepted' }
   | { type: 'rematchDeclined' }
+  | { type: 'reaction'; emoji: string; fromId: string; fromName: string }
 
 export type ClientMessage =
   | { type: 'join'; name: string; preferredColor?: PlayerColor }
@@ -49,3 +50,4 @@ export type ClientMessage =
   | { type: 'rematchRequest' }
   | { type: 'rematchAccept' }
   | { type: 'rematchDecline' }
+  | { type: 'reaction'; emoji: string }

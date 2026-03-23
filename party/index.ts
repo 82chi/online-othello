@@ -112,6 +112,9 @@ export default class OthelloServer implements Party.Server {
       case 'rematchDecline':
         this.handleRematchDecline(sender)
         break
+      case 'reaction':
+        this.handleReaction(sender, msg.emoji)
+        break
     }
   }
 
@@ -208,6 +211,15 @@ export default class OthelloServer implements Party.Server {
   private handleRematchDecline(conn: Party.Connection) {
     this.rematchVotes.clear()
     this.broadcast({ type: 'rematchDeclined' })
+  }
+
+  private handleReaction(conn: Party.Connection, emoji: string) {
+    const player = this.gameState.players.find(p => p.id === conn.id)
+    if (!player) return
+    // Allow only whitelisted emojis
+    const allowed = ['👍', '😮', '🔥', '😂']
+    if (!allowed.includes(emoji)) return
+    this.broadcast({ type: 'reaction', emoji, fromId: conn.id, fromName: player.name })
   }
 
   private startRematch() {
