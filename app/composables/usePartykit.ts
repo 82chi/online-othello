@@ -1,7 +1,9 @@
 import PartySocket from 'partysocket'
 import type { GameState, ChatMessage, ServerMessage, ClientMessage, PlayerColor } from '~/types/game'
+import { useSound } from '~/composables/useSound'
 
 export function usePartykit(roomId: string) {
+  const { playPieceSound } = useSound()
   const config = useRuntimeConfig()
   const partyKitHost = config.public.partyKitHost as string
 
@@ -102,6 +104,14 @@ export function usePartykit(roomId: string) {
         }
         if (prev && msg.state.passCount > prev.passCount && msg.state.status === 'playing') {
           showPassNotice()
+        }
+        // Play sound when pieces are placed (total piece count changes)
+        if (prev) {
+          const prevCount = prev.board.flat().filter(c => c !== null).length
+          const nextCount = msg.state.board.flat().filter(c => c !== null).length
+          if (nextCount > prevCount) {
+            playPieceSound()
+          }
         }
         break
       }

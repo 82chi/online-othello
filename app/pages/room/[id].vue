@@ -110,8 +110,47 @@
         </div>
       </div>
 
-      <!-- Chat sidebar -->
-      <div class="h-64 lg:h-auto lg:w-80 xl:w-96">
+      <!-- Mobile chat toggle button (lg未満のみ表示) -->
+      <button
+        class="lg:hidden fixed right-0 top-1/2 -translate-y-1/2 z-30 bg-gray-800 text-white px-2 py-4 rounded-l-xl shadow-lg flex flex-col items-center gap-1"
+        @click="openChat"
+      >
+        💬
+        <span
+          v-if="unreadCount > 0"
+          class="bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
+        >{{ unreadCount }}</span>
+      </button>
+
+      <!-- Mobile drawer overlay -->
+      <div
+        v-if="chatOpen"
+        class="lg:hidden fixed inset-0 bg-black/50 z-40"
+        @click="chatOpen = false"
+      />
+
+      <!-- Mobile drawer -->
+      <div
+        class="lg:hidden fixed right-0 top-0 h-full w-4/5 max-w-sm z-50 transition-transform duration-300"
+        :class="chatOpen ? 'translate-x-0' : 'translate-x-full'"
+      >
+        <div class="relative h-full">
+          <button
+            class="absolute top-3 right-3 z-10 bg-gray-700 hover:bg-gray-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-lg leading-none"
+            @click="chatOpen = false"
+          >
+            ✕
+          </button>
+          <Chat
+            :messages="chatMessages"
+            :my-id="myId"
+            @send="sendChat"
+          />
+        </div>
+      </div>
+
+      <!-- PC chat sidebar (lg以上のみ表示) -->
+      <div class="hidden lg:block lg:w-80 lg:h-auto flex-shrink-0">
         <Chat
           :messages="chatMessages"
           :my-id="myId"
@@ -281,6 +320,24 @@ function goHome() {
 // Connect on mount
 onMounted(() => {
   connect(playerName, preferredColor)
+})
+
+// Mobile chat drawer
+const chatOpen = ref(false)
+const unreadCount = ref(0)
+
+function openChat() {
+  chatOpen.value = true
+  unreadCount.value = 0
+}
+
+watch(chatMessages, (newMessages, oldMessages) => {
+  if (!chatOpen.value && newMessages.length > (oldMessages?.length ?? 0)) {
+    const lastMsg = newMessages[newMessages.length - 1]
+    if (lastMsg && lastMsg.playerId !== myId.value) {
+      unreadCount.value++
+    }
+  }
 })
 </script>
 
