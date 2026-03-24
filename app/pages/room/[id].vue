@@ -33,6 +33,14 @@
         >
           {{ isDark ? '☀️' : '🌙' }}
         </button>
+        <button
+          class="px-3 py-2 text-sm rounded transition-colors"
+          :class="isDark ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'"
+          :title="isMuted ? $t('sound.on') : $t('sound.off')"
+          @click="toggleMute"
+        >
+          {{ isMuted ? '🔇' : '🔊' }}
+        </button>
       </div>
     </div>
 
@@ -103,6 +111,18 @@
           :is-my-turn="isMyTurn"
           @move="handleMove"
         />
+
+        <!-- Reaction buttons -->
+        <div v-if="gameState.status === 'playing'" class="flex gap-2">
+          <button
+            v-for="emoji in ['👍', '😮', '🔥', '😂']"
+            :key="emoji"
+            class="text-2xl hover:scale-125 transition-transform active:scale-95"
+            @click="sendReaction(emoji)"
+          >
+            {{ emoji }}
+          </button>
+        </div>
 
         <!-- Opponent left notice -->
         <div v-if="opponentLeft" class="w-full max-w-md bg-red-900/50 border border-red-700 rounded-lg p-3 text-center text-base text-red-300">
@@ -195,6 +215,19 @@
       </div>
     </Transition>
 
+    <!-- Reaction overlay -->
+    <div class="fixed inset-0 pointer-events-none flex items-center justify-center z-50">
+      <TransitionGroup name="reaction">
+        <div
+          v-for="r in reactions"
+          :key="r.id"
+          class="text-[80px] drop-shadow-lg"
+        >
+          {{ r.emoji }}
+        </div>
+      </TransitionGroup>
+    </div>
+
     <!-- Game Result overlay -->
     <GameResult
       v-if="showResult"
@@ -212,6 +245,7 @@ import type { PlayerColor } from '~/types/game'
 import { getValidMoves } from '~/composables/useOthello'
 import { useWinLoss } from '~/composables/useWinLoss'
 import { useTheme } from '~/composables/useTheme'
+import { useSound } from '~/composables/useSound'
 
 const route = useRoute()
 const router = useRouter()
@@ -219,6 +253,7 @@ const { locale: currentLocale, locales, setLocale } = useI18n()
 const { getOrCreateGuestName } = useRoom()
 const { wins, losses, addWin, addLoss } = useWinLoss()
 const { isDark, toggleTheme } = useTheme()
+const { isMuted, toggleMute } = useSound()
 
 const roomId = route.params.id as string
 const preferredColor = (route.query.color as PlayerColor) || undefined
@@ -236,9 +271,11 @@ const {
   passNotice,
   rematchRequest,
   opponentLeft,
+  reactions,
   connect,
   sendMove,
   sendChat,
+  sendReaction,
   requestRematch,
   acceptRematch,
   declineRematch,
@@ -351,5 +388,20 @@ watch(chatMessages, (newMessages, oldMessages) => {
 .toast-leave-to {
   opacity: 0;
   transform: translateX(-50%) translateY(20px);
+}
+
+.reaction-enter-active {
+  transition: all 0.3s ease;
+}
+.reaction-leave-active {
+  transition: all 0.8s ease;
+}
+.reaction-enter-from {
+  opacity: 0;
+  transform: scale(0.3);
+}
+.reaction-leave-to {
+  opacity: 0;
+  transform: scale(1.5) translateY(-30px);
 }
 </style>
