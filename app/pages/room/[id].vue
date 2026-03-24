@@ -95,9 +95,9 @@
 
       <!-- Main game area -->
       <div class="flex flex-col items-center gap-3 flex-1">
-        <!-- ScoreBoard + Mobile chat button (横並び) -->
-        <div class="flex items-center w-full gap-2">
-          <div class="flex-1">
+        <!-- ScoreBoard + Mobile chat button -->
+        <div class="flex items-center gap-2 w-full">
+          <div class="flex-1 min-w-0">
             <ScoreBoard
               :game-state="gameState"
               :my-id="myId"
@@ -106,10 +106,11 @@
               :losses="losses"
             />
           </div>
-          <!-- Mobile chat button: スマホのみ、ScoreBoardの右側に配置 -->
+
+          <!-- スマホ用チャットボタン（ScoreBoardの右側余白に配置） -->
           <button
-            class="lg:hidden flex-shrink-0 w-14 h-14 rounded-2xl text-white flex flex-col items-center justify-center gap-0.5 shadow-lg transition-colors"
-            :class="isDark ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-800 hover:bg-gray-700'"
+            class="lg:hidden flex-shrink-0 w-14 h-14 rounded-2xl flex flex-col items-center justify-center gap-0.5 shadow-lg transition-colors"
+            :class="isDark ? 'bg-gray-800 text-white hover:bg-gray-700' : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'"
             @click="openChat"
           >
             <span class="text-2xl">💬</span>
