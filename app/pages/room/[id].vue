@@ -95,14 +95,30 @@
 
       <!-- Main game area -->
       <div class="flex flex-col items-center gap-3 flex-1">
-        <!-- ScoreBoard -->
-        <ScoreBoard
-          :game-state="gameState"
-          :my-id="myId"
-          :is-my-turn="isMyTurn"
-          :wins="wins"
-          :losses="losses"
-        />
+        <!-- ScoreBoard + Mobile chat button (横並び) -->
+        <div class="flex items-center w-full gap-2">
+          <div class="flex-1">
+            <ScoreBoard
+              :game-state="gameState"
+              :my-id="myId"
+              :is-my-turn="isMyTurn"
+              :wins="wins"
+              :losses="losses"
+            />
+          </div>
+          <!-- Mobile chat button: スマホのみ、ScoreBoardの右側に配置 -->
+          <button
+            class="lg:hidden flex-shrink-0 w-14 h-14 rounded-2xl text-white flex flex-col items-center justify-center gap-0.5 shadow-lg transition-colors"
+            :class="isDark ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-800 hover:bg-gray-700'"
+            @click="openChat"
+          >
+            <span class="text-2xl">💬</span>
+            <span
+              v-if="unreadCount > 0"
+              class="bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
+            >{{ unreadCount }}</span>
+          </button>
+        </div>
 
         <!-- Board -->
         <Board
@@ -129,18 +145,6 @@
           {{ $t('room.opponentLeft') }}
         </div>
       </div>
-
-      <!-- Mobile chat toggle button (lg未満のみ表示) -->
-      <button
-        class="lg:hidden fixed right-0 top-1/2 -translate-y-1/2 z-30 bg-gray-800 text-white px-2 py-4 rounded-l-xl shadow-lg flex flex-col items-center gap-1"
-        @click="openChat"
-      >
-        💬
-        <span
-          v-if="unreadCount > 0"
-          class="bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
-        >{{ unreadCount }}</span>
-      </button>
 
       <!-- Mobile drawer overlay -->
       <div
