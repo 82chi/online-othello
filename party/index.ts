@@ -219,7 +219,7 @@ export default class OthelloServer implements Party.Server {
     // Allow only whitelisted emojis
     const allowed = ['👍', '😮', '🔥', '😂']
     if (!allowed.includes(emoji)) return
-    this.broadcast({ type: 'reaction', emoji, fromId: conn.id, fromName: player.name })
+    this.broadcast({ type: 'reaction', emoji, fromId: conn.id, fromName: player.name, fromColor: player.color })
   }
 
   private startRematch() {

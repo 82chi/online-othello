@@ -17,7 +17,7 @@ export function usePartykit(roomId: string) {
   const passNotice = ref(false)
   const rematchRequest = ref<string | null>(null)
   const opponentLeft = ref(false)
-  const reactions = ref<{ id: string; emoji: string; fromName: string }[]>([])
+  const reactions = ref<{ id: string; emoji: string; fromName: string; fromColor: PlayerColor }[]>([])
 
   // keep last connect params for reconnect
   const lastPlayerName = ref<string | null>(null)
@@ -140,7 +140,7 @@ export function usePartykit(roomId: string) {
         break
       case 'reaction': {
         const id = Math.random().toString(36).slice(2)
-        reactions.value.push({ id, emoji: msg.emoji, fromName: msg.fromName })
+        reactions.value.push({ id, emoji: msg.emoji, fromName: msg.fromName, fromColor: msg.fromColor })
         setTimeout(() => {
           reactions.value = reactions.value.filter(r => r.id !== id)
         }, 3000)

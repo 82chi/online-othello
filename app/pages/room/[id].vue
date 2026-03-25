@@ -135,7 +135,9 @@
             v-for="emoji in ['👍', '😮', '🔥', '😂']"
             :key="emoji"
             class="text-2xl hover:scale-125 transition-transform active:scale-95"
-            @click="sendReaction(emoji)"
+            :class="reactionCooldown ? 'opacity-50 cursor-not-allowed' : ''"
+            :disabled="reactionCooldown"
+            @click="sendReactionWithCooldown(emoji)"
           >
             {{ emoji }}
           </button>
@@ -222,11 +224,22 @@
 
     <!-- Reaction overlay -->
     <div class="fixed inset-0 pointer-events-none flex items-center justify-center z-50">
-      <TransitionGroup name="reaction">
+      <TransitionGroup name="reaction-from-left">
         <div
-          v-for="r in reactions"
+          v-for="r in blackReactions"
           :key="r.id"
-          class="text-[80px] drop-shadow-lg"
+          class="text-[80px] drop-shadow-lg rounded-full p-2 absolute"
+          style="border: 3px solid #222; background: rgba(0,0,0,0.15);"
+        >
+          {{ r.emoji }}
+        </div>
+      </TransitionGroup>
+      <TransitionGroup name="reaction-from-right">
+        <div
+          v-for="r in whiteReactions"
+          :key="r.id"
+          class="text-[80px] drop-shadow-lg rounded-full p-2 absolute"
+          style="border: 3px solid #fff; background: rgba(255,255,255,0.15);"
         >
           {{ r.emoji }}
         </div>
@@ -359,6 +372,20 @@ function goHome() {
   router.push('/')
 }
 
+// Reaction cooldown
+const REACTION_COOLDOWN_MS = 3000
+const reactionCooldown = ref(false)
+
+function sendReactionWithCooldown(emoji: string) {
+  if (reactionCooldown.value) return
+  sendReaction(emoji)
+  reactionCooldown.value = true
+  setTimeout(() => { reactionCooldown.value = false }, REACTION_COOLDOWN_MS)
+}
+
+const blackReactions = computed(() => reactions.value.filter(r => r.fromColor === 'black'))
+const whiteReactions = computed(() => reactions.value.filter(r => r.fromColor === 'white'))
+
 // Connect on mount
 onMounted(() => {
   connect(playerName, preferredColor)
@@ -395,18 +422,43 @@ watch(chatMessages, (newMessages, oldMessages) => {
   transform: translateX(-50%) translateY(20px);
 }
 
-.reaction-enter-active {
-  transition: all 0.3s ease;
+/* 黒プレイヤー: 左から中央 */
+.reaction-from-left-enter-active {
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
-.reaction-leave-active {
-  transition: all 0.8s ease;
+.reaction-from-left-leave-active {
+  transition: opacity 0.8s ease;
 }
-.reaction-enter-from {
+.reaction-from-left-enter-from {
   opacity: 0;
-  transform: scale(0.3);
+  transform: translateX(-40vw);
 }
-.reaction-leave-to {
+.reaction-from-left-enter-to {
+  opacity: 1;
+  transform: translateX(0);
+}
+.reaction-from-left-leave-to {
   opacity: 0;
-  transform: scale(1.5) translateY(-30px);
+  transform: translateX(0);
+}
+
+/* 白プレイヤー: 右から中央 */
+.reaction-from-right-enter-active {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.reaction-from-right-leave-active {
+  transition: opacity 0.8s ease;
+}
+.reaction-from-right-enter-from {
+  opacity: 0;
+  transform: translateX(40vw);
+}
+.reaction-from-right-enter-to {
+  opacity: 1;
+  transform: translateX(0);
+}
+.reaction-from-right-leave-to {
+  opacity: 0;
+  transform: translateX(0);
 }
 </style>
