@@ -407,7 +407,7 @@ watch(chatMessages, (newMessages, oldMessages) => {
       unreadCount.value++
     }
   }
-})
+}, { deep: true })
 </script>
 
 <style scoped>
