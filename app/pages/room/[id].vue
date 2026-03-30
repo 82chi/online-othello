@@ -383,8 +383,8 @@ function sendReactionWithCooldown(emoji: string) {
   setTimeout(() => { reactionCooldown.value = false }, REACTION_COOLDOWN_MS)
 }
 
-const blackReactions = computed(() => reactions.value.filter(r => r.fromColor === 'black'))
-const whiteReactions = computed(() => reactions.value.filter(r => r.fromColor === 'white'))
+const blackReactions = computed(() => reactions.value.filter(r => r.fromColor === 'black' || r.fromColor === undefined))
+const whiteReactions = computed(() => reactions.value.filter(r => r.fromColor === 'white' || r.fromColor === undefined))
 
 // Connect on mount
 onMounted(() => {
@@ -400,14 +400,20 @@ function openChat() {
   unreadCount.value = 0
 }
 
-watch(chatMessages, (newMessages, oldMessages) => {
-  if (!chatOpen.value && newMessages.length > (oldMessages?.length ?? 0)) {
-    const lastMsg = newMessages[newMessages.length - 1]
-    if (lastMsg && lastMsg.playerId !== myId.value) {
-      unreadCount.value++
+const lastChatCount = ref(0)
+
+watch(
+  () => chatMessages.value.length,
+  (newLen) => {
+    if (!chatOpen.value && newLen > lastChatCount.value) {
+      const lastMsg = chatMessages.value[chatMessages.value.length - 1]
+      if (lastMsg && lastMsg.playerId !== myId.value) {
+        unreadCount.value++
+      }
     }
+    lastChatCount.value = newLen
   }
-}, { deep: true })
+)
 </script>
 
 <style scoped>
