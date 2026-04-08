@@ -223,23 +223,33 @@
     </Transition>
 
     <!-- Reaction overlay -->
-    <div class="fixed inset-0 pointer-events-none flex items-center justify-center z-50">
-      <TransitionGroup name="reaction-from-left">
+    <div class="fixed inset-0 pointer-events-none z-50">
+      <TransitionGroup name="reaction-from-left" tag="div">
         <div
           v-for="r in blackReactions"
           :key="r.id"
           class="text-[80px] drop-shadow-lg rounded-full p-2 absolute"
-          style="border: 3px solid #222; background: rgba(0,0,0,0.15);"
+          :style="{
+            border: '3px solid #222',
+            background: 'rgba(0,0,0,0.15)',
+            left: '10%',
+            top: r.top,
+          }"
         >
           {{ r.emoji }}
         </div>
       </TransitionGroup>
-      <TransitionGroup name="reaction-from-right">
+      <TransitionGroup name="reaction-from-right" tag="div">
         <div
           v-for="r in whiteReactions"
           :key="r.id"
           class="text-[80px] drop-shadow-lg rounded-full p-2 absolute"
-          style="border: 3px solid #fff; background: rgba(255,255,255,0.15);"
+          :style="{
+            border: '3px solid #fff',
+            background: 'rgba(255,255,255,0.15)',
+            right: '10%',
+            top: r.top,
+          }"
         >
           {{ r.emoji }}
         </div>
@@ -290,6 +300,7 @@ const {
   rematchRequest,
   opponentLeft,
   reactions,
+  lastReceivedChat,
   connect,
   sendMove,
   sendChat,
@@ -383,8 +394,8 @@ function sendReactionWithCooldown(emoji: string) {
   setTimeout(() => { reactionCooldown.value = false }, REACTION_COOLDOWN_MS)
 }
 
-const blackReactions = computed(() => reactions.value.filter(r => r.fromColor === 'black' || r.fromColor === undefined))
-const whiteReactions = computed(() => reactions.value.filter(r => r.fromColor === 'white' || r.fromColor === undefined))
+const blackReactions = computed(() => reactions.value.filter(r => r.fromColor === 'black'))
+const whiteReactions = computed(() => reactions.value.filter(r => r.fromColor === 'white'))
 
 // Connect on mount
 onMounted(() => {
@@ -400,20 +411,12 @@ function openChat() {
   unreadCount.value = 0
 }
 
-const lastChatCount = ref(0)
-
-watch(
-  () => chatMessages.value.length,
-  (newLen) => {
-    if (!chatOpen.value && newLen > lastChatCount.value) {
-      const lastMsg = chatMessages.value[chatMessages.value.length - 1]
-      if (lastMsg && lastMsg.playerId !== myId.value) {
-        unreadCount.value++
-      }
-    }
-    lastChatCount.value = newLen
+watch(lastReceivedChat, (msg) => {
+  if (!msg) return
+  if (!chatOpen.value && msg.playerId !== myId.value) {
+    unreadCount.value++
   }
-)
+})
 </script>
 
 <style scoped>

@@ -17,7 +17,8 @@ export function usePartykit(roomId: string) {
   const passNotice = ref(false)
   const rematchRequest = ref<string | null>(null)
   const opponentLeft = ref(false)
-  const reactions = ref<{ id: string; emoji: string; fromName: string; fromColor: PlayerColor }[]>([])
+  const reactions = ref<{ id: string; emoji: string; fromName: string; fromColor: PlayerColor; top: string }[]>([])
+  const lastReceivedChat = ref<ChatMessage | null>(null)
 
   // keep last connect params for reconnect
   const lastPlayerName = ref<string | null>(null)
@@ -118,6 +119,7 @@ export function usePartykit(roomId: string) {
       }
       case 'chat':
         chatMessages.value.push(msg.message)
+        lastReceivedChat.value = msg.message
         break
       case 'error':
         if (msg.code === 'ROOM_FULL') error.value = 'room_full'
@@ -140,7 +142,8 @@ export function usePartykit(roomId: string) {
         break
       case 'reaction': {
         const id = Math.random().toString(36).slice(2)
-        reactions.value.push({ id, emoji: msg.emoji, fromName: msg.fromName, fromColor: msg.fromColor })
+        const top = `${20 + Math.random() * 50}%`
+        reactions.value.push({ id, emoji: msg.emoji, fromName: msg.fromName, fromColor: msg.fromColor, top })
         setTimeout(() => {
           reactions.value = reactions.value.filter(r => r.id !== id)
         }, 3000)
@@ -241,5 +244,6 @@ export function usePartykit(roomId: string) {
     declineRematch,
     disconnect,
     reactions,
+    lastReceivedChat,
   }
 }
